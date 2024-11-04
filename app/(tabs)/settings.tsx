@@ -1,17 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+/** @format */
 
-type Props = {}
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+
+type Props = {};
 
 const Page = (props: Props) => {
   return (
     <View style={styles.container}>
       <Text>Settings Screen</Text>
     </View>
-  )
-}
-
-export default Page
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -19,4 +19,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-})
+});
+
+export default Page;
