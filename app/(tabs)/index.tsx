@@ -1,6 +1,12 @@
 /** @format */
 
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Header from "@/components/Header";
@@ -16,10 +22,13 @@ type Props = {};
 const Page = (props: Props) => {
   const { top: safeTop } = useSafeAreaInsets();
   const [breakingNews, setBreakingNews] = useState<NewsDataType[]>([]);
+  const [news, setNews] = useState<NewsDataType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading2, setIsLoading2] = useState(false);
 
   useEffect(() => {
     getBreakingNews();
+    getNews();
   }, []);
 
   const getBreakingNews = async () => {
@@ -37,12 +46,34 @@ const Page = (props: Props) => {
     }
   };
 
+  const getNews = async (category: string = "") => {
+    try {
+      setIsLoading2(true);
+      let categoryString = "";
+      if (category.length !== 0) {
+        categoryString = `&category=${category}`;
+      }
+
+      const URL = `https://newsdata.io/api/1/news?apikey=${process.env.EXPO_PUBLIC_API_KEY}&country=gb&language=en&image=1&removeduplicate=1&size=9${categoryString}`;
+      const response = await axios.get(URL);
+
+      if (response && response.data) {
+        setNews(response.data.results);
+        setIsLoading2(false);
+      }
+    } catch (error: any) {
+      console.log("Error Message:", error.message);
+    }
+  };
+
   const onCategoryChanged = (category: string) => {
     console.log(category);
+    setNews([]);
+    getNews(category);
   };
 
   return (
-    <View style={[styles.container, { paddingTop: safeTop }]}>
+    <ScrollView style={[styles.container, { paddingTop: safeTop }]}>
       <Header />
       <SearchBar />
       {isLoading ? (
@@ -51,8 +82,12 @@ const Page = (props: Props) => {
         <BreakingNews newsList={breakingNews} />
       )}
       <Categories onCategoryChange={onCategoryChanged} />
-      <NewList />
-    </View>
+      {isLoading ? (
+        <ActivityIndicator size={"large"} />
+      ) : (
+        <NewList newsList={news} />
+      )}
+    </ScrollView>
   );
 };
 
