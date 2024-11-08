@@ -1,7 +1,7 @@
 /** @format */
 
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import { FlatList, StyleSheet, Text, View, ViewToken } from "react-native";
+import React, { useRef, useState } from "react";
 import { Colors } from "@/constants/Colors";
 import { NewsDataType } from "@/types";
 import SliderItem from "@/components/SliderItem";
@@ -10,6 +10,8 @@ import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
+import Pagination from "./Pagination";
+import Categories from "./Categories";
 
 type Props = {
   newsList: Array<NewsDataType>;
@@ -21,15 +23,36 @@ const BreakingNews = ({ newsList }: Props) => {
   const scrollX = useSharedValue(0);
   const ref = useAnimatedRef<Animated.FlatList<any>>();
 
-  const onScrolhandler = useAnimatedScrollHandler({
+  const onScrollhandler = useAnimatedScrollHandler({
     onScroll: (e) => {
       scrollX.value = e.contentOffset.x;
     },
   });
 
+  const onViewableItemsChanged = ({
+    viewableItems,
+  }: {
+    viewableItems: ViewToken[];
+  }) => {
+    if (
+      viewableItems[0].index !== undefined &&
+      viewableItems[0].index !== null
+    ) {
+      SetPaginationIndex(viewableItems[0].index % newsList.length);
+      console.log(paginationIndex, viewableItems[0].index % newsList.length);
+    }
+  };
+
+  const viewabilityConfig = {
+    itemVisiblePercentThreshold: 50,
+  };
+  const viewabilityConfigCallbackPairs = useRef([
+    { viewabilityConfig, onViewableItemsChanged },
+  ]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>BreakingNews</Text>
+      <Text style={styles.title}>Breaking News</Text>
       <View style={styles.slideWrapper}>
         <Animated.FlatList
           ref={ref}
@@ -37,12 +60,22 @@ const BreakingNews = ({ newsList }: Props) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled
-          onScroll={onScrolhandler}
+          onScroll={onScrollhandler}
           scrollEventThrottle={16}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => setData([...data, ...newsList])}
+          viewabilityConfigCallbackPairs={
+            viewabilityConfigCallbackPairs.current
+          }
           keyExtractor={(_, index) => `list_item${index}`}
           renderItem={({ item, index }) => (
-            <SliderItem slideItem={item} index={index} />
+            <SliderItem slideItem={item} index={index} scrollX={scrollX} />
           )}
+        />
+        <Pagination
+          items={newsList}
+          scrollX={scrollX}
+          paginationIndex={paginationIndex}
         />
       </View>
     </View>

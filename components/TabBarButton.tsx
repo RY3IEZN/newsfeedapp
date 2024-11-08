@@ -1,3 +1,5 @@
+/** @format */
+
 import { Pressable, StyleSheet } from "react-native";
 import React, { useEffect } from "react";
 import { icon } from "@/constants/Icons";
