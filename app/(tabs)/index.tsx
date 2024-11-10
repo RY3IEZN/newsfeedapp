@@ -26,10 +26,10 @@ const Page = (props: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(false);
 
-  useEffect(() => {
-    getBreakingNews();
-    getNews();
-  }, []);
+  // useEffect(() => {
+  //   getBreakingNews();
+  //   getNews();
+  // }, []);
 
   const getBreakingNews = async () => {
     try {

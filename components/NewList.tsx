@@ -23,7 +23,7 @@ const NewList = ({ newsList }: Props) => {
       ) : (
         <>
           {newsList.map((item, index) => (
-            <Link href={`/news/${item.article_id}`} asChild>
+            <Link href={`/news/${item.article_id}`} asChild key={index}>
               <TouchableOpacity>
                 <View key={index} style={styles.itemContainer}>
                   <Image
