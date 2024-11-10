@@ -61,7 +61,7 @@ const NewsDetails = (props: Props) => {
       />
       {isLoading ? (
         <ActivityIndicator />
-      ) : (
+      ) : news.length > 0 ? (
         <ScrollView
           contentContainerStyle={styles.contentContainerStyle}
           style={styles.container}
@@ -76,6 +76,10 @@ const NewsDetails = (props: Props) => {
           {/* replace with a checker, if content exist display content or else display description */}
           {/* <Text style={styles.newsContent}>{news[0].content}</Text> */}
         </ScrollView>
+      ) : (
+        <View style={styles.loadingContainer}>
+          <Text>Failed to load, Drag to refreah.</Text>
+        </View>
       )}
     </>
   );

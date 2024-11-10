@@ -4,9 +4,11 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import React from "react";
 import { Colors } from "@/constants/Colors";
 
-type Props = {};
+type Props = {
+  setSearchQuery: Function;
+};
 
-const SearchBar = (props: Props) => {
+const SearchBar = ({ setSearchQuery }: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.searchbar}>
@@ -15,6 +17,7 @@ const SearchBar = (props: Props) => {
           placeholderTextColor={Colors.lightGrey}
           autoCapitalize="none"
           style={styles.searchText}
+          onChangeText={(query) => setSearchQuery(query)}
         />
       </View>
     </View>

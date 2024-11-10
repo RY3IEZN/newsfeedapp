@@ -1,31 +1,52 @@
 /** @format */
 
-import { Image, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import { NewsDataType } from "@/types";
 import { Colors } from "@/constants/Colors";
+import { Link } from "expo-router";
 
 type Props = { newsList: NewsDataType[] };
 
 const NewList = ({ newsList }: Props) => {
   return (
     <View style={styles.container}>
-      {newsList.map((item, index) => (
-        <View key={index} style={styles.itemContainer}>
-          <Image source={{ uri: item.image_url }} style={styles.itemImg} />
-          <View style={styles.itemInfo}>
-            <Text style={styles.categoryText}>{item.category}</Text>
-            <Text style={styles.title}>{item.title}</Text>
-            <View style={styles.sourceinfo}>
-              <Image
-                source={{ uri: item.source_icon }}
-                style={styles.sourceIcon}
-              />
-              <Text style={styles.sourceName}>{item.source_name}</Text>
-            </View>
-          </View>
-        </View>
-      ))}
+      {newsList.length === 0 ? (
+        <ActivityIndicator />
+      ) : (
+        <>
+          {newsList.map((item, index) => (
+            <Link href={`/news/${item.article_id}`} asChild>
+              <TouchableOpacity>
+                <View key={index} style={styles.itemContainer}>
+                  <Image
+                    source={{ uri: item.image_url }}
+                    style={styles.itemImg}
+                  />
+                  <View style={styles.itemInfo}>
+                    <Text style={styles.categoryText}>{item.category}</Text>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <View style={styles.sourceinfo}>
+                      <Image
+                        source={{ uri: item.source_icon }}
+                        style={styles.sourceIcon}
+                      />
+                      <Text style={styles.sourceName}>{item.source_name}</Text>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </Link>
+          ))}
+        </>
+      )}
     </View>
   );
 };
